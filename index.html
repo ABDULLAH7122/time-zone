@@ -718,8 +718,8 @@
       const now = new Date();
       const formatter = new Intl.DateTimeFormat('en-US', {
         timeZone,
-        hour12: false,
-        hourCycle: 'h23',
+        hour12: true,
+        hourCycle: 'h12',
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
@@ -740,8 +740,17 @@
       );
 
       const offsetMinutes = Math.round((utcFromZone - now.getTime()) / 60000);
+      const timeParts = new Intl.DateTimeFormat('en-US', {
+        timeZone,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+        hourCycle: 'h12'
+      }).formatToParts(now);
+      const timeMap = Object.fromEntries(timeParts.map((part) => [part.type, part.value]));
       return {
-        time: `${map.hour}:${map.minute}:${map.second}`,
+        time: `${timeMap.hour}:${timeMap.minute}:${timeMap.second} ${timeMap.dayPeriod || ''}`.trim(),
         date: `${map.weekday || ''}`.trim(),
         longDate: new Intl.DateTimeFormat('en-US', {
           timeZone,
