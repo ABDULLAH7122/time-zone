@@ -768,6 +768,17 @@
       };
     }
 
+    function makeExtraLocation(label, city, zone, flag = 'US', code = '', phoneCode = '') {
+      return {
+        label,
+        city,
+        zone,
+        flag,
+        code,
+        phoneCode
+      };
+    }
+
     function renderCard(prefix, index) {
       const country = countries[index];
       const info = getTimeZoneInfo(country.zone);
@@ -912,9 +923,21 @@
 
       const response = await fetch(DATA_URL);
       const rawCountries = await response.json();
+      const extraLocations = [
+        makeExtraLocation('United States - Connecticut', 'Hartford', 'America/New_York', 'US', 'CT'),
+        makeExtraLocation('United States - New Jersey', 'Trenton', 'America/New_York', 'US', 'NJ'),
+        makeExtraLocation('United States - Massachusetts', 'Boston', 'America/New_York', 'US', 'MA'),
+        makeExtraLocation('United States - California', 'Sacramento', 'America/Los_Angeles', 'US', 'CA'),
+        makeExtraLocation('United States - Texas', 'Austin', 'America/Chicago', 'US', 'TX'),
+        makeExtraLocation('United States - Florida', 'Tallahassee', 'America/New_York', 'US', 'FL'),
+        makeExtraLocation('United States - Illinois', 'Springfield', 'America/Chicago', 'US', 'IL'),
+        makeExtraLocation('United States - Washington', 'Olympia', 'America/Los_Angeles', 'US', 'WA')
+      ];
+
       countries = rawCountries
         .map(normalizeCountry)
         .filter((country) => country.label && country.zone)
+        .concat(extraLocations)
         .sort((a, b) => a.label.localeCompare(b.label));
 
       const leftDefault = countries.findIndex((country) => country.label === 'Pakistan');
